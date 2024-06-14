@@ -19,15 +19,25 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+        cache: maven
 
     - name: Build with Maven
-      run: mvn clean install
+      run: mvn -B package --file pom.xml
 
-    - name: Generate SBOM with CycloneDX
-      run: mvn cyclonedx:makeAggregateBom
+    - name: Generate SBOM
+      run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom
 
     - name: Upload SBOM
       uses: actions/upload-artifact@v2
       with:
         name: bom.xml
         path: target/bom.xml
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and deploy with Maven
+      run: mvn -B deploy --settings .github/maven-settings.xml
+      env:
+        MAVEN_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.CLOUDSMITH_API_KEY }}
