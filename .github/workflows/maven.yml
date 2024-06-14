@@ -34,7 +34,7 @@ jobs:
         path: target/bom.xml
 
     - name: Deploy to Cloudsmith
-      run: mvn -B deploy --settings .github/maven-settings.xml
+      run: mvn -B deploy --settings .github/workflows/maven-settings.xml
       env:
         MAVEN_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CLOUDSMITH_API_KEY }}
