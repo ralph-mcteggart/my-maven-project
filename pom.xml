@@ -40,4 +40,21 @@
       </plugin>
     </plugins>
   </build>
+    <distributionManagement>
+    <snapshotRepository>
+      <id>cloudsmith</id>
+      <url>https://maven.cloudsmith.io/demo/ciara-test/</url>
+    </snapshotRepository>
+    <repository>
+      <id>cloudsmith</id>
+      <url>https://maven.cloudsmith.io/demo/ciara-test/</url>
+    </repository>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>cloudsmith</id>
+      <url>https://maven.cloudsmith.io/demo/ciara-test/</url>
+    </repository>
+  </repositories>
 </project>
