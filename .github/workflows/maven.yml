@@ -33,10 +33,7 @@ jobs:
         name: bom.xml
         path: target/bom.xml
 
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v1
-
-    - name: Build and deploy with Maven
+    - name: Deploy to Cloudsmith
       run: mvn -B deploy --settings .github/maven-settings.xml
       env:
         MAVEN_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
