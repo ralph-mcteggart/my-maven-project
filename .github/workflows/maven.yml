@@ -1,0 +1,29 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build Maven project inside Docker
+      run: |
+        docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven maven:3.8.5-openjdk-11 mvn clean install
+        docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven maven:3.8.5-openjdk-11 mvn cyclonedx:makeAggregateBom
+
+    - name: Upload SBOM
+      uses: actions/upload-artifact@v2
+      with:
+        name: bom.xml
+        path: target/bom.xml
