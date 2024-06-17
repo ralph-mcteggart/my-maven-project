@@ -2,7 +2,7 @@ name: Download and Print SBOM
 
 on:
   workflow_run:
-    workflows: ["CI Workflow"]
+    workflows: ["Java CI with Maven"]
     types:
       - completed
 
