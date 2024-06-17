@@ -1,13 +1,13 @@
-name: Fetch and Print SBOM
+name: Download and Print SBOM
 
 on:
   workflow_run:
-    workflows: ["Java CI with Maven"]
+    workflows: ["CI Workflow"]
     types:
       - completed
 
 jobs:
-  fetch-print:
+  download-sbom:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,11 +21,18 @@ jobs:
         distribution: 'adopt'
         cache: maven
 
-    - name: Download SBOM Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: bom.xml
-        path: target
+    - name: Configure Maven settings
+      run: cp my-maven-project/.github/workflows/maven-settings.xml $HOME/.m2/settings.xml
+
+    - name: Download SBOM
+      run: |
+        mvn dependency:get \
+          -Dartifact=com.example:my-app:xml:1.0-SNAPSHOT:cyclonedx \
+          -DremoteRepositories=https://dl.cloudsmith.io/SVB3OAQQpRSkGmXc/demo/ciara-test/maven/ \
+          -Ddest=target/sbom.xml
 
     - name: Print SBOM
-      run: cat target/bom.xml
+      run: cat target/sbom.xml
+      env:
+        CLOUDSMITH_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
+        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
