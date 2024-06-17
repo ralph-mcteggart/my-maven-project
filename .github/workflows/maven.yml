@@ -38,3 +38,4 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CLOUDSMITH_API_KEY }}
+        CLOUDSMITH_REPOSITORY_URL: ${{ secrets.CLOUDSMITH_REPOSITORY_URL }}
