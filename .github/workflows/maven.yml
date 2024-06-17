@@ -43,7 +43,7 @@ jobs:
     - name: Fetch and Print SBOM
       run: |
         echo "Fetching the SBOM"
-        mvn dependency:copy -Dartifact=com.example:my-app:1.0-SNAPSHOT:xml -DoutputDirectory=target -DdestFileName=bom.xml
+        mvn dependency:copy --settings .github/workflows/maven-settings.xml -Dartifact=com.example:my-app:1.0-SNAPSHOT:xml -DoutputDirectory=target -DdestFileName=bom.xml
         echo "Printing the SBOM"
         cat target/bom.xml
       env:
