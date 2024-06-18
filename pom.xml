@@ -59,17 +59,17 @@
   </build>
   <distributionManagement>
     <snapshotRepository>
-      <id>${env.CLOUDSMITH_REPOSITORY}</id>
+      <id>cloudsmith</id>
       <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
     </snapshotRepository>
     <repository>
-      <id>${env.CLOUDSMITH_REPOSITORY}</id>
+      <id>cloudsmith</id>
       <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
     </repository>
   </distributionManagement>
   <repositories>
     <repository>
-      <id>${env.CLOUDSMITH_REPOSITORY}</id>
+      <id>cloudsmith</id>
       <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
     </repository>
   </repositories>
