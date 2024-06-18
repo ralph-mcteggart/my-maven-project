@@ -60,17 +60,17 @@
   <distributionManagement>
     <snapshotRepository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
+      <url>https://maven.cloudsmith.io/ciara-demo/ciara-test</url>
     </snapshotRepository>
     <repository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
+      <url>https://maven.cloudsmith.io/ciara-demo/ciara-test</url>
     </repository>
   </distributionManagement>
   <repositories>
     <repository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
+      <url>https://maven.cloudsmith.io/ciara-demo/ciara-test</url>
     </repository>
   </repositories>
 </project>
