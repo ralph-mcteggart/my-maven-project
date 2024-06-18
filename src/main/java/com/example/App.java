@@ -7,4 +7,5 @@ public class App {
         ImmutableList<String> list = ImmutableList.of("Hello", "World");
         System.out.println(list);
    
-
+    }
+}
