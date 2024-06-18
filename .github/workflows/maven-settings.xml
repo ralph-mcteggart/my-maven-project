@@ -5,7 +5,7 @@
                               https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>${env.CLOUDSMITH_REPOSITORY}</id>
+      <id>cloudsmith</id>
       <username>${env.CLOUDSMITH_USERNAME}</username>
       <password>${env.CLOUDSMITH_API_KEY}</password>
     </server>
