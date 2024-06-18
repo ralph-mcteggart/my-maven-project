@@ -41,5 +41,5 @@ jobs:
         CLOUDSMITH_TOKEN: ${{ secrets.CLOUDSMITH_TOKEN }}
         #CLOUDSMITH_REPOSITORY: ${{ secrets.CLOUDSMITH_REPOSITORY }}
         #CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_TOKEN }}/${{ secrets.CLOUDSMITH_REPOSITORY }}/maven/"
-        CLOUDSMITH_REPOSITORY_URL: https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_TOKEN }}/ciara-demo/ciara-test/maven/
+        CLOUDSMITH_REPOSITORY_URL: https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/ciara-demo/ciara-test/maven/
 
