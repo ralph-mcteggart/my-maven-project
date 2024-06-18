@@ -70,7 +70,15 @@
   <repositories>
     <repository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
+      <url>${env.DL_CLOUDSMITH_REPOSITORY_URL}</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
     </repository>
   </repositories>
 </project>
