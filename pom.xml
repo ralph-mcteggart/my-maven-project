@@ -60,7 +60,7 @@
   <distributionManagement>
     <snapshotRepository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}/url>
+      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
     </snapshotRepository>
     <repository>
       <id>cloudsmith</id>
