@@ -1,13 +1,10 @@
 package com.example;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
-}
+import com.google.common.collect.ImmutableList;
+
+public class App {
+    public static void main(String[] args) {
+        ImmutableList<String> list = ImmutableList.of("Hello", "World");
+        System.out.println(list);
+   
+
