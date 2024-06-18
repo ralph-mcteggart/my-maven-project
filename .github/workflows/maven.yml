@@ -37,8 +37,8 @@ jobs:
       run: mvn -B deploy --settings .github/workflows/maven-settings.xml
       env:
         CLOUDSMITH_USERNAME: ciara-carey
-        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        CLOUDSMITH_TOKEN: ${{ secrets.CLOUDSMITH_TOKEN }}
-        CLOUDSMITH_REPOSITORY: ${{ secrets.CLOUDSMITH_REPOSITORY }}
+        CLOUDSMITH_API_KEY: 8814ae621a860491d1a36557fb650277a47d5726
+        CLOUDSMITH_TOKEN: 2ZCsecH9O2s8xrVO
+        CLOUDSMITH_REPOSITORY: ciara-demo/ciara-test
         #CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_TOKEN }}/${{ secrets.CLOUDSMITH_REPOSITORY }}/maven/"
-        CLOUDSMITH_REPOSITORY_URL: https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/ciara-demo/ciara-test/maven/
+        CLOUDSMITH_REPOSITORY_URL: https://dl.cloudsmith.io/2ZCsecH9O2s8xrVO/ciara-demo/ciara-test/maven/
