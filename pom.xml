@@ -49,6 +49,13 @@
         </executions>
       </plugin>
     </plugins>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http</artifactId>
+        <version>3.4.0</version>
+      </extension>
+    </extensions>
   </build>
   <distributionManagement>
     <snapshotRepository>
