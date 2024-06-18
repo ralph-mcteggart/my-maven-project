@@ -28,7 +28,7 @@ jobs:
       run: |
         mvn dependency:get \
           -Dartifact=com.example:my-app:xml:1.0-SNAPSHOT:cyclonedx \
-          -DremoteRepositories=https://dl.cloudsmith.io/SVB3OAQQpRSkGmXc/demo/ciara-test/maven/ \
+          -DremoteRepositories=https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ secrets.CLOUDSMITH_REPOSITORY_URL }}/maven/ \
           -Ddest=target/sbom.xml
 
     - name: Print SBOM
