@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  CLOUDSMITH_REPO_NAME: ciara-demo/ciara-test # OSS_DEMO_INPUTS: Update to {org_name}/{repo_name}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,6 +42,5 @@ jobs:
         CLOUDSMITH_USERNAME: ciara-carey
         CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
         CLOUDSMITH_ENTITLEMENT_TOKEN: ${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}
-        CLOUDSMITH_REPOSITORY: ciara-demo/ciara-test
+        CLOUDSMITH_REPOSITORY_URL: "https://maven.cloudsmith.io/${{ env.CLOUDSMITH_REPO_NAME }}"
         #CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_TOKEN }}/${{ secrets.CLOUDSMITH_REPOSITORY }}/maven/"
-        #CLOUDSMITH_REPOSITORY_URL: https://dl.cloudsmith.io/2ZCsecH9O2s8xrVO/ciara-demo/ciara-test/maven/
