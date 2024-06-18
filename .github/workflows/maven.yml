@@ -36,7 +36,7 @@ jobs:
 
 
     - name: Generate SBOM
-      run: mvn -X org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom
+      run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom
 
     - name: Upload SBOM
       uses: actions/upload-artifact@v2
