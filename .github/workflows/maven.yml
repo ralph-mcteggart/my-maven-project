@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  CLOUDSMITH_REPO_NAME: ciara-demo/ciara-test # DEMO_INPUTS: Update to {org_name}/{repo_name}
+  CLOUDSMITH_REPO_NAME: ciara-demo/sbom-support # DEMO_INPUTS: Update to {org_name}/{repo_name}
 
 jobs:
   build:
