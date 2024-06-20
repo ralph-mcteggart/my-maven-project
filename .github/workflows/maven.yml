@@ -28,7 +28,10 @@ jobs:
       run: |
         mkdir -p ~/.m2
         cat <<EOF > ~/.m2/settings.xml
-        <settings>
+        <?xml version="1.0" encoding="UTF-8"?>
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
           <servers>
             <server>
               <id>cloudsmith</id>
@@ -38,24 +41,11 @@ jobs:
           </servers>
           <profiles>
             <profile>
-              <id>cloudsmith</id>
-              <repositories>
-                <repository>
-                  <id>cloudsmith</id>
-                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
-                  <releases>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                  </releases>
-                  <snapshots>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                  </snapshots>
-                </repository>
-              </repositories>
+              <id>cloudsmith-profile</id>
               <pluginRepositories>
                 <pluginRepository>
-                  <id>cloudsmith-plugins</id>
+                  <id>cloudsmith</id>
+                  <name>cloudsmith</name>
                   <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
                   <releases>
                     <enabled>true</enabled>
@@ -67,10 +57,25 @@ jobs:
                   </snapshots>
                 </pluginRepository>
               </pluginRepositories>
+              <repositories>
+                <repository>
+                  <id>cloudsmith</id>
+                  <name>cloudsmith</name>
+                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                  </snapshots>
+                </repository>
+              </repositories>
             </profile>
           </profiles>
           <activeProfiles>
-            <activeProfile>cloudsmith</activeProfile>
+            <activeProfile>cloudsmith-profile</activeProfile>
           </activeProfiles>
         </settings>
         EOF
