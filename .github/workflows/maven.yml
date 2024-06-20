@@ -7,9 +7,8 @@ on:
     branches: [ main ]
 
 env:
-  CLOUDSMITH_REPO_NAME: ciara-demo/sbom-support # DEMO_INPUTS: Update to {org_name}/{repo_name}
+  CLOUDSMITH_REPO_NAME: ciara-demo/sbom-support
   CLOUDSMITH_USERNAME: ciara-carey
-
 
 jobs:
   build:
@@ -78,8 +77,6 @@ jobs:
         EOF
 
     - name: Build with Maven
-      #run: mvn -B package --file pom.xml
-      #run: mvn -X clean package --file pom.xml --settings .github/workflows/maven-settings.xml
       run: mvn -X clean package --settings ~/.m2/settings.xml
       env:
         CLOUDSMITH_USERNAME: ${{ env.CLOUDSMITH_USERNAME }}
@@ -89,7 +86,6 @@ jobs:
         DL_CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/"
 
     - name: Generate SBOM
-      #run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom
       run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom --settings ~/.m2/settings.xml
 
     - name: Upload SBOM
@@ -97,7 +93,7 @@ jobs:
       with:
         name: bom.xml
         path: target/bom.xml
-        
+
     - name: Deploy to Cloudsmith
       run: mvn -B deploy --settings ~/.m2/settings.xml
       env:
