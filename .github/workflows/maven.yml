@@ -79,15 +79,14 @@ jobs:
         
     - name: Build with Maven
       #run: mvn -B package --file pom.xml
-      run: mvn -X clean package --file pom.xml --settings .github/workflows/maven-settings.xml
+      #run: mvn -X clean package --file pom.xml --settings .github/workflows/maven-settings.xml
+      run: mvn -X clean package --settings ~/.m2/settings.xml
       env:
         CLOUDSMITH_USERNAME: ${{ env.CLOUDSMITH_USERNAME }}
         CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
         CLOUDSMITH_ENTITLEMENT_TOKEN: ${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}
         CLOUDSMITH_REPOSITORY_URL: "https://maven.cloudsmith.io/${{ env.CLOUDSMITH_REPO_NAME }}"      
         DL_CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/"
-
-
     - name: Generate SBOM
       run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom
 
