@@ -46,7 +46,7 @@ jobs:
                 <pluginRepository>
                   <id>cloudsmith</id>
                   <name>cloudsmith</name>
-                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
+                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_API_KEY }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
                   <releases>
                     <enabled>true</enabled>
                     <updatePolicy>always</updatePolicy>
@@ -61,7 +61,7 @@ jobs:
                 <repository>
                   <id>cloudsmith</id>
                   <name>cloudsmith</name>
-                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
+                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_API_KEY }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
                   <releases>
                     <enabled>true</enabled>
                     <updatePolicy>always</updatePolicy>
