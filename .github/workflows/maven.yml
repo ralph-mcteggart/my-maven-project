@@ -23,7 +23,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-        cache: 'none'
+        #cache: 'maven'
 
     - name: Configure Maven settings
       run: |
