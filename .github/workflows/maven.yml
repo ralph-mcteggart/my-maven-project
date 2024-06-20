@@ -24,6 +24,9 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         
+    - name: Clear local Maven repository cache
+      run: rm -rf ~/.m2/repository/*
+        
     - name: Configure Maven settings
       run: |
         mkdir -p ~/.m2
