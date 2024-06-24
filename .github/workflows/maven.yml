@@ -24,6 +24,65 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
+    - name: Clear local Maven repository cache
+      run: rm -rf ~/.m2/repository/*
+
+    - name: Configure Maven settings
+      run: |
+        mkdir -p ~/.m2
+        cat <<EOF > ~/.m2/settings.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+          <servers>
+            <server>
+              <id>cloudsmith</id>
+              <username>${{ secrets.CLOUDSMITH_USERNAME }}</username>
+              <password>${{ secrets.CLOUDSMITH_API_KEY }}</password>
+            </server>
+          </servers>
+          <profiles>
+            <profile>
+              <id>cloudsmith-profile</id>
+              <pluginRepositories>
+                <pluginRepository>
+                  <id>cloudsmith</id>
+                  <name>cloudsmith</name>
+                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+              </pluginRepositories>
+              <repositories>
+                <repository>
+                  <id>cloudsmith</id>
+                  <name>cloudsmith</name>
+                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>true</enabled>
+                    <updatePolicy>always</updatePolicy>
+                  </snapshots>
+                </repository>
+              </repositories>
+            </profile>
+          </profiles>
+          <activeProfiles>
+            <activeProfile>cloudsmith-profile</activeProfile>
+          </activeProfiles>
+        </settings>
+        EOF
+
     - name: Build with Maven
       run: mvn -X clean package --settings ~/.m2/settings.xml -U
       env:
