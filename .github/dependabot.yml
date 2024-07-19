@@ -3,9 +3,7 @@ registries:
   cloudsmith:
     type: "maven-repository"
     url: "https://dl.cloudsmith.io/basic/ciara-demo/sbom-support/maven/"
-    username: "${{ secrets.CLOUDSMITH_USER_NAME }}"
-    password: "${{ secrets.CLOUDSMITH_API_KEY }}"
-
+    token: "${{ secrets.CLOUDSMITH_API_KEY }}"
 updates:
   - package-ecosystem: "maven"
     directory: "/" # The location of your pom.xml file
