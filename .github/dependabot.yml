@@ -6,6 +6,8 @@ registries:
     #token: "${{ secrets.CLOUDSMITH_API_KEY }}"
     username: "${{ secrets.CLOUDSMITH_USER_NAME }}"
     password: "${{ secrets.CLOUDSMITH_API_KEY }}"
+    replaces-base: true
+
 updates:
   - package-ecosystem: "maven"
     directory: "/" # The location of your pom.xml file
