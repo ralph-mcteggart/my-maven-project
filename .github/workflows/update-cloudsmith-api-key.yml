@@ -1,9 +1,9 @@
 name: Update Cloudsmith API Key for Dependabot
 
 on:
-  # This will run at the schedule you define (every 30 minutes in this case)
+  # Schedule the workflow to run every 30 minutes
   schedule:
-    - cron: "*/30 * * * *"  # Update every 30 minutes
+    - cron: "*/30 * * * *"
   # Allow manual triggering of the workflow
   workflow_dispatch:
 
@@ -13,24 +13,30 @@ jobs:
     permissions:
       id-token: write  # Necessary for OIDC
       contents: read
+      secrets: write  # Allow access to the repository secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Use the Cloudsmith CLI Action to authenticate via OIDC and get the token
+      # Install Cloudsmith CLI and authenticate via OIDC
       - name: Install Cloudsmith CLI and Authenticate via OIDC
         uses: cloudsmith-io/cloudsmith-cli-action@v1.0.0
         with:
-          oidc-namespace: 'ciara-demo'
-          oidc-service-slug: 'gha-service'
-      
-      # Assume Cloudsmith CLI has a way to retrieve a token after authentication
+          oidc-namespace: 'ciara-demo'  # Your OIDC namespace
+          oidc-service-slug: 'gha-service'  # Your OIDC service slug
+
+      # Retrieve the Cloudsmith API Key
       - name: Retrieve Cloudsmith API Key
         run: |
-          export CLOUDSMITH_API_KEY=$(cloudsmith auth token --oidc)  # Hypothetical command to retrieve token
-          echo $CLOUDSMITH_API_KEY
+          export CLOUDSMITH_API_KEY=$(cloudsmith auth token --oidc)  # OIDC Authentication Token
+          echo $CLOUDSMITH_API_KEY  # Output to ensure it is retrieved correctly
       
-      # Update the Dependabot secret with the new API Key in the dependabot settings
-      - name: Update Dependabot Secret
-        run: |
-          gh secret set CLOUDSMITH_API_KEY --app dependabot --body "$CLOUDSMITH_API_KEY"
+      # Use merchstack action to update Dependabot secret
+      - name: Set Dependabot Secret for Cloudsmith API Key
+        uses: merchstack/set-action-dependabot-secret@v/2.1.3
+        with:
+          name: 'CLOUDSMITH_API_KEY'  # The name of the secret for Dependabot
+          value: ${{ env.CLOUDSMITH_API_KEY }}  # The retrieved Cloudsmith API Key
+          repository: ${{ github.repository }}  # The current repository
+          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token to authenticate
+          dependabot: true  # Mark as a Dependabot secret
