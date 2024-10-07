@@ -31,5 +31,5 @@ jobs:
           name: 'CLOUDSMITH_API_KEY'  # The name of the secret for Dependabot
           value: ${{ secrets.CLOUDSMITH_API_KEY }}  # Use the API key provided by the Cloudsmith CLI action
           repository: ${{ github.repository }}  # The current repository
-          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token to authenticate
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}  # Use your PAT instead of GITHUB_TOKEN
           dependabot: true  # Mark as a Dependabot secret
