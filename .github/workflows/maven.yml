@@ -95,7 +95,7 @@ jobs:
       run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom --settings ~/.m2/settings.xml
 
     - name: Upload SBOM
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: bom.xml
         path: target/bom.xml
