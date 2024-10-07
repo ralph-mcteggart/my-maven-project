@@ -13,7 +13,6 @@ jobs:
     permissions:
       id-token: write  # Necessary for OIDC
       contents: read
-      secrets: write  # Allow access to the repository secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
