@@ -6,8 +6,8 @@
   <servers>
     <server>
       <id>cloudsmith</id>
-      <username>${env.CLOUDSMITH_USERNAME}</username>
-      <password>${env.CLOUDSMITH_API_KEY}</password>
+      <username>${secret.CLOUDSMITH_USERNAME}</username>
+      <password>${secret.CLOUDSMITH_API_KEY}</password>
     </server>
   </servers>
 </settings>
