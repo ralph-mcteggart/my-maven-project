@@ -1,0 +1,36 @@
+name: Update Cloudsmith API Key for Dependabot
+
+on:
+  # This will run at the schedule you define (every 30 minutes in this case)
+  schedule:
+    - cron: "*/30 * * * *"  # Update every 30 minutes
+  # Allow manual triggering of the workflow
+  workflow_dispatch:
+
+jobs:
+  update-cloudsmith-api-key:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Necessary for OIDC
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Use the Cloudsmith CLI Action to authenticate via OIDC and get the token
+      - name: Install Cloudsmith CLI and Authenticate via OIDC
+        uses: cloudsmith-io/cloudsmith-cli-action@v1.0.0
+        with:
+          oidc-namespace: 'ciara-demo'
+          oidc-service-slug: 'gha-service'
+      
+      # Assume Cloudsmith CLI has a way to retrieve a token after authentication
+      - name: Retrieve Cloudsmith API Key
+        run: |
+          export CLOUDSMITH_API_KEY=$(cloudsmith auth token --oidc)  # Hypothetical command to retrieve token
+          echo $CLOUDSMITH_API_KEY
+      
+      # Update the Dependabot secret with the new API Key in the dependabot settings
+      - name: Update Dependabot Secret
+        run: |
+          gh secret set CLOUDSMITH_API_KEY --app dependabot --body "$CLOUDSMITH_API_KEY"
