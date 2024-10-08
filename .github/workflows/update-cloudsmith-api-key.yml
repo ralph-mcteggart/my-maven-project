@@ -2,8 +2,8 @@ name: Update Cloudsmith API Key for Dependabot
 
 on:
   # Schedule the workflow to run every 30 minutes
-  schedule:
-    - cron: "*/30 * * * *"
+  #schedule:
+  #  - cron: "*/30 * * * *"
   # Allow manual triggering of the workflow
   workflow_dispatch:
 
