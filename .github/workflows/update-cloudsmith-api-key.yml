@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # Necessary for OIDC
-      contents: read
-      secrets: write  # Ensure that secrets have write access
+      contents: write  # Ensures access to repository content
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,6 +24,8 @@ jobs:
 
       # Fetch public key for Dependabot secrets
       - name: Fetch public key for Dependabot secrets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
         run: |
           public_key_json=$(gh api /orgs/ciara-demo/dependabot/secrets/public-key -H "Accept: application/vnd.github+json")
           echo "key=$(echo $public_key_json | jq -r '.key')" >> $GITHUB_ENV
