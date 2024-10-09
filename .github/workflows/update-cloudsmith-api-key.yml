@@ -1,50 +1,54 @@
-name: Rotate Dependabot Secret
+name: Update Cloudsmith API Key for Dependabot
 
 on:
-  workflow_dispatch:
+  # This will run at the schedule you define
   schedule:
-    - cron: "*/30 * * * *"  # Run every 30 minutes
+    - cron: "*/30 * * * *"  # Update every 30 minutes
+  # Allow manual triggering of the workflow
+  workflow_dispatch:
 
 jobs:
-  rotate-secret:
+  update-cloudsmith-api-key:
     runs-on: ubuntu-latest
-
+    permissions:
+      id-token: write  # Necessary for OIDC
+      contents: read
+      secrets: write  # Ensure that secrets have write access
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies (LibSodium for encryption)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libsodium-dev
-          npm install tweetsodium
+      - name: Set GH_TOKEN environment variable
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Pass the GitHub token for authentication
+        run: echo "GH_TOKEN set"
 
+      # Fetch public key for Dependabot secrets
       - name: Fetch public key for Dependabot secrets
-        id: fetch_public_key
         run: |
           public_key_json=$(gh api /orgs/ciara-demo/dependabot/secrets/public-key -H "Accept: application/vnd.github+json")
           echo "key=$(echo $public_key_json | jq -r '.key')" >> $GITHUB_ENV
           echo "key_id=$(echo $public_key_json | jq -r '.key_id')" >> $GITHUB_ENV
 
-      - name: Encrypt the secret using LibSodium
-        id: encrypt_secret
-        run: |
-          node -e "
-            const sodium = require('tweetsodium');
-            const key = Buffer.from('${{ env.key }}', 'base64');
-            const secret = Buffer.from('${{ secrets.YOUR_NEW_SECRET }}');
-            const encryptedBytes = sodium.seal(secret, key);
-            console.log(Buffer.from(encryptedBytes).toString('base64'));
-          " > encrypted_secret.txt
-          echo "encrypted_value=$(cat encrypted_secret.txt)" >> $GITHUB_ENV
+      # Use the Cloudsmith CLI Action to authenticate via OIDC and get the token
+      - name: Install Cloudsmith CLI and Authenticate via OIDC
+        uses: cloudsmith-io/cloudsmith-cli-action@v1.0.0
+        with:
+          oidc-namespace: 'ciara-demo'
+          oidc-service-slug: 'gha-service'
 
-      - name: Rotate Dependabot secret using GitHub CLI
+      # Encrypt the secret and update the Dependabot secret using the GitHub CLI
+      - name: Rotate Dependabot Secret
+        env:
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api \
-          --method PUT \
-          -H "Accept: application/vnd.github+json" \
-          /orgs/ciara-demo/dependabot/secrets/DEP_CLOUDSMITH_API_KEY \
-          -f "encrypted_value=${{ env.encrypted_value }}" \
-          -f "key_id=${{ env.key_id }}" \
-          -f "visibility=selected" \
-          -f "selected_repository_ids[]=815194697"
+          encrypted_value=$(echo -n $CLOUDSMITH_API_KEY | base64)
+          gh api --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /orgs/ciara-demo/dependabot/secrets/DEP_CLOUDSMITH_API_KEY \
+            -f "encrypted_value=$encrypted_value" \
+            -f "key_id=$key_id" \
+            -f "visibility=selected" \
+            -f "selected_repository_ids[]=815194697"  # Example repo ID
