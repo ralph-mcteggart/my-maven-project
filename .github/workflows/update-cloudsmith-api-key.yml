@@ -1,10 +1,11 @@
 name: Update Cloudsmith API Key for Dependabot
 
-# Run the workflow on a schedule or manually
 on:
+  # This will run at the schedule you define
   schedule:
-    - cron: "*/30 * * * *"  # Runs every 30 minutes
-  workflow_dispatch:  # Allows for manual runs
+    - cron: "*/30 * * * *"  # Update every 30 minutes
+  # Allow manual triggering of the workflow
+  workflow_dispatch:
 
 jobs:
   update-cloudsmith-api-key:
@@ -14,24 +15,21 @@ jobs:
       contents: read
 
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Authenticate with Cloudsmith using OIDC and get API Key
-      - name: Install Cloudsmith CLI
+      # Use the Cloudsmith CLI Action to authenticate via OIDC and get the token
+      - name: Install Cloudsmith CLI and Authenticate via OIDC
         uses: cloudsmith-io/cloudsmith-cli-action@v1.0.0
         with:
-          oidc-namespace: 'ciara-demo'  # Your OIDC namespace
-          oidc-service-slug: 'gha-service'  # Your OIDC service slug
-
-      # Set the Dependabot Secret for DEP_CLOUDSMITH_API_KEY with the updated Cloudsmith API Key
-      - name: Set Dependabot Secret for Cloudsmith API Key
+          oidc-namespace: 'ciara-demo'
+          oidc-service-slug: 'gha-service'
+      
+      # Update the Dependabot secret with the new API Key using the fine-grained token
+      - name: Update Dependabot Secret
         uses: merchstack/set-action-dependabot-secret@v/2.1.3
         with:
-          name: 'DEP_CLOUDSMITH_API_KEY'  # Name of the Dependabot secret to update
-          value: ${{ env.CLOUDSMITH_API_KEY }}  # Use the API key retrieved by the Cloudsmith CLI action
-          repository: ${{ github.repository }}  # The current repository
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}  # Use a PAT with appropriate permissions
-          dependabot: true  # Indicate this is a Dependabot secret
-
+          name: 'DEP_CLOUDSMITH_API_KEY'  # Your updated secret name
+          value: ${{ env.CLOUDSMITH_API_KEY }}  # The token provided by Cloudsmith CLI
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}  # Use your fine-grained PAT with admin rights
+          dependabot: true
