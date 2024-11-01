@@ -7,7 +7,7 @@ registries:
     #password: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
     #username: "oauth2"
     username: "token"
-    token: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
+    password: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
     replaces-base: true
 
 updates:
