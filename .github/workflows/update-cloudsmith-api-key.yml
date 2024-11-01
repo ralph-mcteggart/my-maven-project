@@ -27,6 +27,7 @@ jobs:
       - name: Rotate Dependabot Secret          
         env:
           CLOUDSMITH_API_KEY: "${{ steps.cloudsmith-auth.outputs.cloudsmith_jwt }}"
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           echo "$CLOUDSMITH_API_KEY" | gh secret set DEP_CLOUDSMITH_API_KEY \
             --app dependabot \
