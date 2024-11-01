@@ -23,12 +23,13 @@ jobs:
           oidc-namespace: 'ciara-demo'
           oidc-service-slug: 'gha-service'
 
-      # Encrypt the secret and update the Dependabot secret using the GitHub CLI
+     # Set the Cloudsmith API key as a Dependabot secret using GitHub CLI
       - name: Rotate Dependabot Secret          
         env:
           CLOUDSMITH_API_KEY: "${{ steps.cloudsmith-auth.outputs.cloudsmith_jwt }}"
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
-          echo "$CLOUDSMITH_API_KEY" | gh secret set DEP_CLOUDSMITH_API_KEY \
+          gh secret set DEP_CLOUDSMITH_API_KEY \
             --app dependabot \
-            --repo ${{ github.repository }}
+            --repo ${{ github.repository }} \
+            --body "$CLOUDSMITH_API_KEY"
