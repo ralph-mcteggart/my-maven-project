@@ -3,10 +3,10 @@ registries:
   cloudsmith:
     type: "maven-repository"
     url: "https://dl.cloudsmith.io/basic/ciara-demo/sbom-support/maven/"
-    username: "${{ secrets.DEP_CLOUDSMITH_USER_NAME }}"
-    #username: "oauth2"
-    #token: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
-    password: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
+    #username: "${{ secrets.DEP_CLOUDSMITH_USER_NAME }}"
+    #password: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
+    username: "oauth2"
+    token: "${{ secrets.DEP_CLOUDSMITH_API_KEY }}"
     replaces-base: true
 
 updates:
