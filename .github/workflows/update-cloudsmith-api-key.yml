@@ -12,11 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # Necessary for OIDC
-      contents: write  # Ensures access to repository content
-      actions: write
+      contents: read   # Ensures access to repository content
 
     steps:
-      # Use the Cloudsmith CLI Action to authenticate via OIDC and get the token
+      # Step 1: Use the Cloudsmith CLI Action to authenticate via OIDC and get the Cloudsmith JWT
       - name: Install Cloudsmith CLI and Authenticate via OIDC
         id: cloudsmith-auth
         uses: cloudsmith-io/cloudsmith-cli-action@v1.0.0
@@ -24,10 +23,41 @@ jobs:
           oidc-namespace: 'ciara-demo'
           oidc-service-slug: 'gha-service'
 
+      # Step 2: Generate the GitHub App JWT to get access to the installation token
+      - name: Generate GitHub App JWT
+        id: generate_jwt
+        env:
+          APP_ID: "<YOUR_APP_ID>"  # Replace with your GitHub App ID
+          PRIVATE_KEY: "${{ secrets.GITHUB_APP_PRIVATE_KEY }}"  # Private key for your GitHub App
+        run: |
+          JWT=$(ruby -r openssl -r base64 -r json -e '
+            header = {"alg": "RS256", "typ": "JWT"}
+            payload = {"iat": Time.now.to_i, "exp": Time.now.to_i + (10 * 60), "iss": ENV["APP_ID"]}
+            key = OpenSSL::PKey::RSA.new(ENV["PRIVATE_KEY"])
+            token = Base64.urlsafe_encode64(header.to_json).gsub("=", "") + "." +
+                    Base64.urlsafe_encode64(payload.to_json).gsub("=", "")
+            signature = Base64.urlsafe_encode64(key.sign(OpenSSL::Digest::SHA256.new, token)).gsub("=", "")
+            puts "#{token}.#{signature}"
+          ')
+          echo "JWT=$JWT" >> $GITHUB_ENV
+
+      # Step 3: Get the installation token for the GitHub App
+      - name: Get Installation Access Token
+        id: get_installation_token
+        env:
+          JWT: "${{ env.JWT }}"
+        run: |
+          INSTALLATION_ID=$(curl -s -H "Authorization: Bearer $JWT" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/app/installations | jq -r '.[] | select(.account.login=="ciaracarey") | .id')
+          ACCESS_TOKEN=$(curl -s -X POST -H "Authorization: Bearer $JWT" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/app/installations/$INSTALLATION_ID/access_tokens | jq -r '.token')
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+
+      # Step 4: Rotate the Dependabot Secret using the Cloudsmith JWT
       - name: Update Dependabot Secret
         env:
           CLOUDSMITH_API_KEY: "${{ steps.cloudsmith-auth.outputs.cloudsmith_jwt }}"
-          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GH_TOKEN: "${{ env.ACCESS_TOKEN }}"
         run: |
           echo "$CLOUDSMITH_API_KEY" | gh secret set DEP_CLOUDSMITH_API_KEY \
             --app dependabot \
