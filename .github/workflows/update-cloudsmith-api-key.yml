@@ -29,6 +29,5 @@ jobs:
         run: |
           gh secret set DEP_CLOUDSMITH_API_KEY \
             --app dependabot \
-            --visibility all 
             --repo "${{ github.repository }}" \
             --body "$CLOUDSMITH_API_KEY"
