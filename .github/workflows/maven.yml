@@ -31,10 +31,15 @@ jobs:
         mkdir -p ~/.m2
         cat <<EOF > ~/.m2/settings.xml
         <?xml version="1.0" encoding="UTF-8"?>
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-          <servers>
+        <settings>
+          <mirrors>
+            <mirror>
+              <id>cloudsmith</id>
+              <mirrorOf>*</mirrorOf>
+              <url>https://dl.cloudsmith.io/${YOUR_ENTITLEMENT_TOKEN}/ciara-demo/acme-nonprod/maven/</url>
+            </mirror>
+          </mirrors>          
+        <servers>
             <server>
               <id>cloudsmith</id>
               <username>${{ secrets.CLOUDSMITH_USERNAME }}</username>
