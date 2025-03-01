@@ -1,13 +1,17 @@
-<!-- my-maven-project/.github/workflows/maven-settings.xml -->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+<settings>
+  <mirrors>
+    <mirror>
+      <id>cloudsmith-mirror</id>
+      <mirrorOf>*</mirrorOf>
+      <url>https://dl.cloudsmith.io/${YOUR_ENTITLEMENT_TOKEN}/ciara-demo/acme-nonprod/maven/</url>
+    </mirror>
+  </mirrors>
+
   <servers>
     <server>
-      <id>cloudsmith</id>
-      <username>${secret.CLOUDSMITH_USERNAME}</username>
-      <password>${secret.CLOUDSMITH_API_KEY}</password>
+      <id>cloudsmith-mirror</id>
+      <username>${{ secrets.CLOUDSMITH_USERNAME }}</username>
+      <password>${{ secrets.CLOUDSMITH_API_KEY }}</password>
     </server>
   </servers>
 </settings>
