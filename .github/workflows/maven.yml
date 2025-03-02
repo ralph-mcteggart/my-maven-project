@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI and Deploy to Cloudsmith
 
 on:
   push:
@@ -7,109 +7,52 @@ on:
     branches: [ main ]
 
 env:
-  CLOUDSMITH_REPO_NAME: ciara-demo/acme-nonprod
-  
+  CLOUDSMITH_ORG: ciara-demo
+  CLOUDSMITH_REPO: acme-nonprod
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      # 1) Check out the code
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
+      # 2) Set up Java (here JDK 11)
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: "11"
+          distribution: "adopt"
 
-    - name: Clear local Maven repository cache
-      run: rm -rf ~/.m2/repository/*
+      # 3) Clear local Maven cache (optional)
+      - name: Clear Maven cache
+        run: rm -rf ~/.m2/repository/*
 
-    - name: Configure Maven settings
-      run: |
-        mkdir -p ~/.m2
-        cat <<EOF > ~/.m2/settings.xml
-        <?xml version="1.0" encoding="UTF-8"?>
-        <settings>
-          <mirrors>
-            <mirror>
-              <id>cloudsmith</id>
-              <mirrorOf>*</mirrorOf>
-              <url>https://dl.cloudsmith.io/${YOUR_ENTITLEMENT_TOKEN}/ciara-demo/acme-nonprod/maven/</url>
-            </mirror>
-          </mirrors>          
-        <servers>
-            <server>
-              <id>cloudsmith</id>
-              <username>${{ secrets.CLOUDSMITH_USERNAME }}</username>
-              <password>${{ secrets.CLOUDSMITH_API_KEY }}</password>
-            </server>
-          </servers>
-          <profiles>
-            <profile>
-              <id>cloudsmith-profile</id>
-              <pluginRepositories>
-                <pluginRepository>
-                  <id>cloudsmith</id>
-                  <name>cloudsmith</name>
-                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
-                  <releases>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                  </releases>
-                  <snapshots>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                  </snapshots>
-                </pluginRepository>
-              </pluginRepositories>
-              <repositories>
-                <repository>
-                  <id>cloudsmith</id>
-                  <name>cloudsmith</name>
-                  <url>https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/</url>
-                  <releases>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                  </releases>
-                  <snapshots>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                  </snapshots>
-                </repository>
-              </repositories>
-            </profile>
-          </profiles>
-          <activeProfiles>
-            <activeProfile>cloudsmith-profile</activeProfile>
-          </activeProfiles>
-        </settings>
-        EOF
+      # 4) Configure Maven settings with Cloudsmith credentials
+      - name: Configure Maven settings
+        run: |
+          mkdir -p ~/.m2
+          cat <<EOF > ~/.m2/settings.xml
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                        https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <!-- Must match the <id> in distributionManagement of pom.xml -->
+                <id>cloudsmith</id>
+                <!-- 'username' can be literally 'cloudsmith' or your username -->
+                <username>cloudsmith</username>
+                <!-- 'password' is your Cloudsmith API Key -->
+                <password>${{ secrets.CLOUDSMITH_API_KEY }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
 
-    - name: Build with Maven
-      run: mvn -X clean package --settings ~/.m2/settings.xml -U
-      env:
-        CLOUDSMITH_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
-        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        CLOUDSMITH_ENTITLEMENT_TOKEN: ${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}
-        CLOUDSMITH_REPOSITORY_URL: "https://maven.cloudsmith.io/${{ env.CLOUDSMITH_REPO_NAME }}"      
-        DL_CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/"
-
-    - name: Generate SBOM
-      run: mvn -B org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom --settings ~/.m2/settings.xml
-
-    - name: Upload SBOM
-      uses: actions/upload-artifact@v4
-      with:
-        name: bom.xml
-        path: target/bom.xml
-
-    - name: Deploy to Cloudsmith
-      run: mvn -B deploy --settings ~/.m2/settings.xml
-      env:
-        CLOUDSMITH_USERNAME: ${{ secrets.CLOUDSMITH_USERNAME }}
-        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        CLOUDSMITH_ENTITLEMENT_TOKEN: ${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}
-        CLOUDSMITH_REPOSITORY_URL: "https://maven.cloudsmith.io/${{ env.CLOUDSMITH_REPO_NAME }}"      
-        DL_CLOUDSMITH_REPOSITORY_URL: "https://dl.cloudsmith.io/${{ secrets.CLOUDSMITH_ENTITLEMENT_TOKEN }}/${{ env.CLOUDSMITH_REPO_NAME }}/maven/"
+      # 5) Build and Deploy to Cloudsmith
+      - name: Build and Deploy
+        run: mvn clean deploy --settings ~/.m2/settings.xml -U
+        # '-U' forces update of snapshots/releases, optional
