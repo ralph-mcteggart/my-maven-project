@@ -75,12 +75,11 @@
   <distributionManagement>
     <snapshotRepository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
+      <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
     </snapshotRepository>
     <repository>
       <id>cloudsmith</id>
-      <url>${env.CLOUDSMITH_REPOSITORY_URL}</url>
+      <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
     </repository>
-  </distributionManagement>
-  
+  </distributionManagement>  
 </project>
