@@ -73,13 +73,13 @@
   </build>
   
   <distributionManagement>
-    <snapshotRepository>
-      <id>cloudsmith</id>
-      <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
-    </snapshotRepository>
-    <repository>
-      <id>cloudsmith</id>
-      <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
-    </repository>
-  </distributionManagement>  
+           <snapshotRepository>
+                    <id>cloudsmith</id>  <!-- This MUST match the id in settings.xml -->
+                    <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
+           </snapshotRepository>
+           <repository>
+                    <id>cloudsmith</id>  <!-- This MUST match the id in settings.xml -->
+                    <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
+           </repository>
+  </distributionManagement>
 </project>
