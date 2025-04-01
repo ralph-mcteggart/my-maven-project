@@ -52,7 +52,7 @@ jobs:
               <server>
                 <id>cloudsmith</id>
                 <username>ciara-carey</username>
-                <password>${{ $CLOUDSMITH_API_KEY }}</password>
+                <password>${{ CLOUDSMITH_API_KEY }}</password>
               </server>
             </servers>
           </settings>
