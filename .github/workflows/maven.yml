@@ -39,7 +39,7 @@ jobs:
       - name: Auth to Cloudsmith with OIDC
         uses: cloudsmith-io/cloudsmith-cli-action@v1.0.2
         with:
-          oidc-namespace: ${{ env.CS_ORG }}
+          oidc-namespace: ${{ env.CLOUDSMITH_ORG }}
           oidc-service-slug: ${{ env.SERVICE }}
           oidc-auth-only: 'true'
           pip-install: false
