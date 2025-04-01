@@ -1,11 +1,12 @@
 package com.example;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        ImmutableList<String> list = ImmutableList.of("Hello", "World");
+        List<String> list = Collections.unmodifiableList(Arrays.asList("Hello", "World"));
         System.out.println(list);
-   
     }
 }
