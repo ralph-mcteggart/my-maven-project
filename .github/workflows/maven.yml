@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  CLOUDSMITH_ORG: ciara-demo
+  CLOUDSMITH_ORG: globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
 
 jobs:
