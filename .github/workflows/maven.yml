@@ -42,6 +42,7 @@ jobs:
           oidc-namespace: ${{ env.CS_ORG }}
           oidc-service-slug: ${{ env.SERVICE }}
           oidc-auth-only: 'true'
+          pip-install: false
 
       # 4b) Configure Maven settings (Pull & Push to Cloudsmith)
       - name: Configure Maven settings
