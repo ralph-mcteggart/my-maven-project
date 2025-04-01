@@ -56,7 +56,7 @@ jobs:
             <servers>
               <server>
                 <id>cloudsmith</id>
-                <username>ciara-carey</username>
+                <username>${{env.SERVICE}}</username>
                 <password>${CLOUDSMITH_API_KEY}</password>
               </server>
             </servers>
