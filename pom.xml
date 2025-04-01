@@ -12,7 +12,7 @@
   <repositories>
     <repository>
       <id>cloudsmith</id>
-      <url>https://dl.cloudsmith.io/basic/ciara-demo/acme-nonprod/maven/</url>
+      <url>https://dl.cloudsmith.io/basic/globex-innovations/acme-nonprod/maven/</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
@@ -27,11 +27,11 @@
   <distributionManagement>
     <snapshotRepository>
       <id>cloudsmith</id>
-      <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
+      <url>https://maven.cloudsmith.io/globex-innovations/acme-nonprod/</url>
     </snapshotRepository>
     <repository>
       <id>cloudsmith</id>
-      <url>https://maven.cloudsmith.io/ciara-demo/acme-nonprod/</url>
+      <url>https://maven.cloudsmith.io/globex-innovations/acme-nonprod/</url>
     </repository>
   </distributionManagement>
 
