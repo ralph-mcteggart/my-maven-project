@@ -57,7 +57,7 @@ jobs:
                 <mirror>
                   <id>cloudsmith</id>
                   <name>Cloudsmith Maven Mirror</name>
-                  <url>https://dl.cloudsmith.io/${CLOUDSMITH_API_KEY}/${CLOUDSMITH_ORG}/${CLOUDSMITH_REPO}/maven/</url>
+                  <url>https://dl.cloudsmith.io/${CLOUDSMITH_ORG}/${CLOUDSMITH_REPO}/maven/</url>
                   <mirrorOf>*</mirrorOf>         <!-- ← * = ALL repositories including central -->
                </mirror>
             </mirrors>
