@@ -50,14 +50,7 @@ jobs:
         mkdir -p ~/.m2
         cat > ~/.m2/settings.xml <<EOF
         <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-          <mirrors>
-            <mirror>
-              <id>cloudsmith</id>
-              <name>Cloudsmith Maven Mirror</name>
-              <url>https://dl.cloudsmith.io/${CLOUDSMITH_ORG}/${CLOUDSMITH_REPO}/maven/</url>
-              <mirrorOf>*</mirrorOf>
-            </mirror>
-          </mirrors>
+ 
           <servers>
             <server>
               <id>cloudsmith</id>
