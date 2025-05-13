@@ -43,25 +43,24 @@ jobs:
         pip-install:       false
         # exports CLOUDSMITH_API_KEY for the next steps
 
-    # 4b. Generate Maven settings with a global mirror
-    - name: Configure Maven settings for Cloudsmith
-      shell: bash
+    # 4b) Configure Maven settings (Pull & Push to Cloudsmith)
+    - name: Configure Maven settings
       run: |
         mkdir -p ~/.m2
-        cat > ~/.m2/settings.xml <<EOF
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
- 
-          <servers>
-            <server>
-              <id>cloudsmith</id>
-              <username>${SERVICE}</username>
-              <password>${CLOUDSMITH_API_KEY}</password>
-            </server>
-          </servers>
-        </settings>
-        EOF
-        echo "----- ~/.m2/settings.xml -----"
-        cat ~/.m2/settings.xml
+          cat <<EOF > ~/.m2/settings.xml
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                        https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>cloudsmith</id>
+                <username>${{env.SERVICE}}</username>
+                <password>${CLOUDSMITH_API_KEY}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
 
     # 5. Build
     - name: Build (clean package)
