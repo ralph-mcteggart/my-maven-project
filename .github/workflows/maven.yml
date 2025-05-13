@@ -55,7 +55,7 @@ jobs:
                                         https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
               <server>
-                <id>cloudsmith</id>
+                <id>central</id>
                 <username>${{env.SERVICE}}</username>
                 <password>${CLOUDSMITH_API_KEY}</password>
               </server>
