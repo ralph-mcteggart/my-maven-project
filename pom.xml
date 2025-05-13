@@ -12,7 +12,7 @@
   <!-- Cloudsmith repo for both dependencies and deployment -->
   <repositories>
     <repository>
-      <id>cloudsmith</id>
+      <id>central</id>
       <url>https://dl.cloudsmith.io/basic/globex-innovations/acme-nonprod/maven/</url>
       <releases>
         <enabled>true</enabled>
@@ -25,11 +25,11 @@
 
   <distributionManagement>
     <repository>
-      <id>cloudsmith</id>
+      <id>central</id>
       <url>https://maven.cloudsmith.io/globex-innovations/acme-nonprod/</url>
     </repository>
     <snapshotRepository>
-      <id>cloudsmith</id>
+      <id>central</id>
       <url>https://maven.cloudsmith.io/globex-innovations/acme-nonprod/</url>
     </snapshotRepository>
   </distributionManagement>
