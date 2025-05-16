@@ -67,6 +67,19 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <!-- CycloneDX plugin to generate an SBOM (demonstrating vulnerability scanning) -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>2.7.8</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
     <extensions>
