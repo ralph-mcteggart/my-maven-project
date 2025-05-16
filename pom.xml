@@ -42,7 +42,6 @@
       <version>2.9.10.1</version>
     </dependency>
 
-    <dependency>
     <!-- Optional: JUnit if you want test step -->
     <dependency>
       <groupId>junit</groupId>
@@ -79,4 +78,3 @@
     </extensions>
   </build>
 </project>
-
