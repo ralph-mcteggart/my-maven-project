@@ -1,51 +1,9 @@
 trigger:
-- main                # or your branch
-
-variables:
-  CLOUDSMITH_ORG:  globex-innovations
-  CLOUDSMITH_REPO: acme-nonprod
-  SERVICE:         ci_acme_service      # service-account slug (username in settings.xml)
-
-  # secret variable in Library ▸ Variable Group
-  CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)
+- main
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-# 1  Check out code
 - checkout: self
-
-# 2  Generate settings.xml with just <servers>
-- script: |
-    mkdir -p ~/.m2
-    cat > ~/.m2/settings.xml <<EOF
-    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
-      <servers>
-        <server>
-          <id>central</id>                        <!-- must match the id in <distributionManagement> -->
-          <username>${SERVICE}</username>         <!-- service slug -->
-          <password>${CLOUDSMITH_API_KEY}</password>
-        </server>
-      </servers>
-    </settings>
-    EOF
-  displayName: "Create Maven settings.xml"
-  env:
-    CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)
-    SERVICE: $(SERVICE)
-
-# 3  Build + deploy (clean deploy = package + deploy)
-- task: Maven@3
-  displayName: "Maven build & deploy to Cloudsmith"
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean deploy'                         # runs package + deploy
-    options: '-s $(Agent.HomeDirectory)/.m2/settings.xml -U'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+- script: echo "hello world"
