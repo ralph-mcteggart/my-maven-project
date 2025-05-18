@@ -34,8 +34,8 @@ steps:
     EOF
   displayName: "Create Maven settings.xml"
   env:
-    CLOUDSMITH_API_KEY: $($(CLOUDSMITH_SERVICE_API_KEY))
-    USERNAME: $(SERVICE)
+    CLOUDSMITH_API_KEY: $(CLOUDSMITH_SERVICE_API_KEY)
+    SERVICE: $(SERVICE)
 
 # 3) Build, test, and deploy
 - task: Maven@4
