@@ -1,9 +1,49 @@
 trigger:
-- main
+- main                          # build on pushes to main
+
+variables:
+  SERVICE: ci_acme_service
+  CLOUDSMITH_ORG: globex-innovations
+  CLOUDSMITH_REPO: acme-nonprod
+  CLOUDSMITH_SERVER_ID: central          # must match <id> in pom.xml
+  CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)   # secret in Library
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
+# 1) Check out code
 - checkout: self
-- script: echo "hello world"
+
+# 2) Generate settings.xml with just <servers>
+- bash: |
+    mkdir -p ~/.m2
+    cat > ~/.m2/settings.xml <<EOF
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+      <servers>
+        <server>
+          <id>${CLOUDSMITH_SERVER_ID}</id>
+          <username>${SERVICE}</username>
+          <password>${CLOUDSMITH_API_KEY}</password>
+        </server>
+      </servers>
+    </settings>
+    EOF
+  displayName: "Create Maven settings.xml"
+  env:
+    CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)
+    SERVICE: $(SERVICE)
+
+# 3) Build, test, deploy
+- task: Maven@4
+  displayName: "Maven clean-deploy"
+  inputs:
+    mavenPOMFile: 'pom.xml'                # <-- note capital POM
+    goals: 'clean deploy'
+    options: '-s ~/.m2/settings.xml -U'    # uses the settings you generated earlier
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
