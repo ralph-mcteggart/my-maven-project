@@ -36,13 +36,13 @@ steps:
     CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)
     SERVICE: $(SERVICE)
 
-# 3) Build, test, deploy
+# 3) Build, test, and deploy
 - task: Maven@4
   displayName: "Maven clean-deploy"
   inputs:
-    mavenPOMFile: 'pom.xml'                # <-- note capital POM
+    mavenPOMFile: 'pom.xml'
     goals: 'clean deploy'
-    options: '-s ~/.m2/settings.xml -U'    # uses the settings you generated earlier
+    options: '-s $(HOME)/.m2/settings.xml -U'   # absolute path, no tilde
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     publishJUnitResults: true
