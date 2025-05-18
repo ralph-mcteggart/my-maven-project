@@ -2,7 +2,7 @@ trigger:
 - main                          # build on pushes to main
 
 variables:
-  SERVICE: ci_acme_service
+  SERVICE: azure_acme_service
   USERNAME: ciara-carey
   CLOUDSMITH_ORG: globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
