@@ -6,7 +6,7 @@ variables:
   CLOUDSMITH_ORG: globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
   CLOUDSMITH_SERVER_ID: central          # must match <id> in pom.xml
-  CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)   # secret in Library
+  #CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)   # secret in Library
 
 pool:
   vmImage: ubuntu-latest
