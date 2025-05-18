@@ -1,32 +1,43 @@
 trigger:
-- main                          # build on pushes to main
+- main            # run on pushes to main
 
+# ──────────────────────────────
+# Variables
+# ──────────────────────────────
 variables:
+  # Cloudsmith service account slug
   SERVICE: azure_acme_service
-  USERNAME: ciara-carey
-  CLOUDSMITH_ORG: globex-innovations
+
+  # Maven <server> id (must match <id> in pom.xml)
+  CLOUDSMITH_SERVER_ID: central
+
+  # Org / repo values are only here if you need them elsewhere
+  CLOUDSMITH_ORG:  globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
-  CLOUDSMITH_SERVER_ID: central          # must match <id> in pom.xml
-  #CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)   # secret in Library
+
+# The secret API key for azure_acme_service is stored in the Library
+#   Name:  CLOUDSMITH_SERVICE_API_KEY
+#   Value: <api-key string>   (marked “Keep this value secret”)
 
 pool:
   vmImage: ubuntu-latest
 
+# ──────────────────────────────
+# Steps
+# ──────────────────────────────
 steps:
 # 1) Check out code
 - checkout: self
 
-# 2) Generate settings.xml with just <servers>
+# 2) Write ~/.m2/settings.xml with service-account creds
 - bash: |
     mkdir -p ~/.m2
     cat > ~/.m2/settings.xml <<EOF
-    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <settings>
       <servers>
         <server>
           <id>${CLOUDSMITH_SERVER_ID}</id>
-          <username>${USERNAME}</username>
+          <username>${SERVICE}</username>
           <password>${CLOUDSMITH_API_KEY}</password>
         </server>
       </servers>
@@ -43,7 +54,7 @@ steps:
   inputs:
     mavenPOMFile: 'pom.xml'
     goals: 'clean deploy'
-    options: '-s $(HOME)/.m2/settings.xml -U'   # absolute path, no tilde
+    options: '-s $(HOME)/.m2/settings.xml -U'   # use the generated settings.xml
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     publishJUnitResults: true
