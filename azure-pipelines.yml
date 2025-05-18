@@ -15,10 +15,6 @@ variables:
   CLOUDSMITH_ORG:  globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
 
-# The secret API key for azure_acme_service is stored in the Library
-#   Name:  CLOUDSMITH_SERVICE_API_KEY
-#   Value: <api-key string>   (marked “Keep this value secret”)
-
 pool:
   vmImage: ubuntu-latest
 
