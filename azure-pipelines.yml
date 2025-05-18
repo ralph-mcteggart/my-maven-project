@@ -26,7 +26,7 @@ steps:
       <servers>
         <server>
           <id>${CLOUDSMITH_SERVER_ID}</id>
-          <username>${USERNAME}</username>
+          <username>${SERVICE}</username>
           <password>${CLOUDSMITH_API_KEY}</password>
         </server>
       </servers>
@@ -35,7 +35,7 @@ steps:
   displayName: "Create Maven settings.xml"
   env:
     CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)
-    USERNAME: $(USERNAME)
+    USERNAME: $(SERVICE)
 
 # 3) Build, test, and deploy
 - task: Maven@4
