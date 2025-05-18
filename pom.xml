@@ -13,7 +13,8 @@
   <repositories>
     <repository>
       <id>central</id>
-      <url>https://dl.cloudsmith.io/basic/globex-innovations/acme-nonprod/maven/</url>
+      <!-- <url>https://dl.cloudsmith.io/basic/globex-innovations/acme-nonprod/maven/</url> -->
+      <url>https://maven.cloudsmith.io/globex-innovations/acme-nonprod/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
