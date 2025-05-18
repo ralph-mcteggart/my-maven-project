@@ -3,6 +3,7 @@ trigger:
 
 variables:
   SERVICE: ci_acme_service
+  USERNAME: ciara-carey
   CLOUDSMITH_ORG: globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
   CLOUDSMITH_SERVER_ID: central          # must match <id> in pom.xml
@@ -25,7 +26,7 @@ steps:
       <servers>
         <server>
           <id>${CLOUDSMITH_SERVER_ID}</id>
-          <username>${SERVICE}</username>
+          <username>${USERNAME}</username>
           <password>${CLOUDSMITH_API_KEY}</password>
         </server>
       </servers>
@@ -34,7 +35,7 @@ steps:
   displayName: "Create Maven settings.xml"
   env:
     CLOUDSMITH_API_KEY: $(CLOUDSMITH_API_KEY)
-    SERVICE: $(SERVICE)
+    USERNAME: $(USERNAME)
 
 # 3) Build, test, and deploy
 - task: Maven@4
