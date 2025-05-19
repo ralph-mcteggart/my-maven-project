@@ -1,15 +1,16 @@
-# azure-pipelines.yml
-
 trigger:
-  branches:
-    include:
-      - main
+  - main
 
 variables:
   # Cloudsmith service account slug
   SERVICE: azure_acme_service
-  # The secret should be set in your pipeline library as CLOUDSMITH_SERVICE_API_KEY
-  CLOUDSMITH_SERVICE_API_KEY: $(CLOUDSMITH_SERVICE_API_KEY)
+
+  # Maven <server> id (must match <id> in pom.xml)
+  CLOUDSMITH_SERVER_ID: central
+
+  # Org / repo (not used in this script but available if you need it)
+  CLOUDSMITH_ORG: globex-innovations
+  CLOUDSMITH_REPO: acme-nonprod
 
 pool:
   vmImage: ubuntu-latest
@@ -18,7 +19,8 @@ steps:
   # 1) Check out your code
   - checkout: self
 
-  # 2) Create ~/.m2/settings.xml with a mirror of central (for both deps & plugins) plus credentials
+  # 2) Emit a settings.xml that mirrors *central* (for deps AND plugins) to your Cloudsmith repo,
+  #    and injects your credentials under the same id ("central").
   - bash: |
       mkdir -p ~/.m2
       cat > ~/.m2/settings.xml << 'EOF'
@@ -29,8 +31,8 @@ steps:
 
         <mirrors>
           <mirror>
-            <id>cloudsmith-mirror</id>
-            <name>Cloudsmith mirror of central (deps & plugins)</name>
+            <id>cloudsmith-public</id>
+            <name>Cloudsmith mirror of central</name>
             <mirrorOf>central</mirrorOf>
             <url>https://maven.cloudsmith.io/globex-innovations/acme-nonprod/</url>
           </mirror>
@@ -38,23 +40,24 @@ steps:
 
         <servers>
           <server>
-            <id>central</id>
-            <username>${SERVICE}</username>
-            <password>${CLOUDSMITH_SERVICE_API_KEY}</password>
+            <id>$CLOUDSMITH_SERVER_ID</id>
+            <username>$SERVICE</username>
+            <password>$CLOUDSMITH_API_KEY</password>
           </server>
         </servers>
       </settings>
       EOF
     displayName: Create Maven settings.xml
     env:
+      # this secret should be defined in your pipeline as CLOUDSMITH_SERVICE_API_KEY
+      CLOUDSMITH_API_KEY: $(CLOUDSMITH_SERVICE_API_KEY)
       SERVICE: $(SERVICE)
-      CLOUDSMITH_SERVICE_API_KEY: $(CLOUDSMITH_SERVICE_API_KEY)
 
-  # 3) Run Maven clean deploy using that settings file
+  # 3) Run your clean+deploy exactly as before
   - task: Maven@4
-    displayName: Maven: clean & deploy
+    displayName: Maven clean & deploy
     inputs:
-      mavenPomFile: 'pom.xml'
+      mavenPOMFile: 'pom.xml'
       goals: 'clean deploy'
       options: '-s $(HOME)/.m2/settings.xml -U'
       javaHomeOption: 'JDKVersion'
