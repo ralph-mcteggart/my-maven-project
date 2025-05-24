@@ -77,10 +77,11 @@ jobs:
 
       # 5) Build with Maven
       - name: Build with Maven
-        run: mvn clean package --settings ~/.m2/settings.xml -U
+        #run: mvn clean package --settings ~/.m2/settings.xml -U
+        run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
+
         
       # 6) Deploy to Cloudsmith
       - name: Deploy to Cloudsmith
-        #run: mvn deploy --settings ~/.m2/settings.xml
-        run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify
-
+        run: mvn deploy --settings ~/.m2/settings.xml
+        
