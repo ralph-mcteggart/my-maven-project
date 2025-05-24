@@ -11,11 +11,11 @@
 
   <distributionManagement>
     <repository>
-      <id>central</id>
+      <id>cloudsmith</id>
       <url>https://maven.cloudsmith.io/cloudsmith-test/acme-nonprod/</url>
     </repository>
     <snapshotRepository>
-      <id>central</id>
+      <id>cloudsmith</id>
       <url>https://maven.cloudsmith.io/cloudsmith-test/acme-nonprod/</url>
     </snapshotRepository>
   </distributionManagement>
