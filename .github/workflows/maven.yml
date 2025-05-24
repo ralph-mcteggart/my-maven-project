@@ -11,9 +11,10 @@ permissions:
   id-token: write  # Necessary for GH Identity Provider to write the JWT token which Cloudsmith needs to read
 
 env:
-  CLOUDSMITH_ORG: globex-innovations
+  CLOUDSMITH_ORG: cloudsmith-test 
+  #globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
-  SERVICE: ci_acme_service 
+  SERVICE: oidc_ciara 
 
 jobs:
   build-and-deploy:
@@ -64,7 +65,7 @@ jobs:
               <mirror>
                 <id>cloudsmith</id>
                 <name>Cloudsmith – mirror of Central</name>
-                <url>https://maven.cloudsmith.io/globex-innovations/acme-prod/</url>
+                <url>https://maven.cloudsmith.io/${CLOUDSMITH_ORG}/${CLOUDSMITH_REPO}/</url>
                 <mirrorOf>central</mirrorOf>
               </mirror>
             </mirrors>
