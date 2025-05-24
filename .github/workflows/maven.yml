@@ -81,4 +81,6 @@ jobs:
         
       # 6) Deploy to Cloudsmith
       - name: Deploy to Cloudsmith
-        run: mvn deploy --settings ~/.m2/settings.xml
+        #run: mvn deploy --settings ~/.m2/settings.xml
+        run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify
+
