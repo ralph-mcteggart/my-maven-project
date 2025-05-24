@@ -55,11 +55,19 @@ jobs:
                                         https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
               <server>
-                <id>central</id>
+                <id>cloudsmith</id>
                 <username>${{env.SERVICE}}</username>
                 <password>${CLOUDSMITH_API_KEY}</password>
               </server>
             </servers>
+            <mirrors>
+              <mirror>
+                <id>cloudsmith</id>
+                <name>Cloudsmith – mirror of Central</name>
+                <url>https://maven.cloudsmith.io/globex-innovations/acme-prod/</url>
+                <mirrorOf>central</mirrorOf>
+              </mirror>
+            </mirrors>
           </settings>
           EOF
           
