@@ -11,10 +11,12 @@ permissions:
   id-token: write  # Necessary for GH Identity Provider to write the JWT token which Cloudsmith needs to read
 
 env:
-  CLOUDSMITH_ORG: cloudsmith-test 
+  CLOUDSMITH_ORG: globex-innovations
+  #cloudsmith-test 
   #globex-innovations
   CLOUDSMITH_REPO: acme-nonprod
-  SERVICE: oidc_ciara 
+  SERVICE: ci_acme_service 
+  #oidc_ciara 
 
 jobs:
   build-and-deploy:
