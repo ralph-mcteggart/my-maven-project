@@ -14,7 +14,7 @@ env:
   CLOUDSMITH_ORG: globex-innovations
   #cloudsmith-test 
   #globex-innovations
-  CLOUDSMITH_REPO: acme-nonprod
+  CLOUDSMITH_REPO: acme-prod
   SERVICE: ci_acme_service 
   #oidc_ciara 
 
@@ -80,8 +80,8 @@ jobs:
 
       # 5) Build with Maven
       - name: Build with Maven
-        run: mvn clean package --settings ~/.m2/settings.xml -U
-        #run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
+        #run: mvn clean package --settings ~/.m2/settings.xml -U
+        run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
 
         
       # 6) Deploy to Cloudsmith
