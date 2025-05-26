@@ -89,11 +89,12 @@ jobs:
           curl -s "https://get.sdkman.io" | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           sdk install mvnd
+          echo "$HOME/.sdkman/candidates/mvnd/current/bin" >> $GITHUB_PATH
           mvnd --version
 
       # 5b) Build with mvnd (multi-threaded Maven daemon)
       - name: Build with mvnd
-        run: mvnd -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
+        run: mvnd clean verify --settings ~/.m2/settings.xml -T 1C -U
 
         
       # 6) Deploy to Cloudsmith
