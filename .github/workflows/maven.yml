@@ -14,7 +14,7 @@ env:
   CLOUDSMITH_ORG: globex-innovations
   #cloudsmith-test 
   #globex-innovations
-  CLOUDSMITH_REPO: acme-prod
+  CLOUDSMITH_REPO: acme-prod3
   SERVICE: ci_acme_service
   #oidc_ciara 
 
@@ -79,9 +79,19 @@ jobs:
         run: cat ~/.m2/settings.xml
 
       # 5) Build with Maven
-      - name: Build with Maven
+      #- name: Build with Maven
         #run: mvn clean package --settings ~/.m2/settings.xml -U
-        run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
+        #run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
+
+      # 5a) Install mvnd
+      - name: Install mvnd
+        run: |
+          brew install mvndaemon/homebrew-mvnd/mvnd
+          mvnd --version
+
+      # 5b) Build with mvnd (multi-threaded Maven daemon)
+      - name: Build with mvnd
+        run: mvnd -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
 
         
       # 6) Deploy to Cloudsmith
