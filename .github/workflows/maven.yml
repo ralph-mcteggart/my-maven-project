@@ -15,7 +15,7 @@ env:
   #cloudsmith-test 
   #globex-innovations
   CLOUDSMITH_REPO: acme-prod
-  SERVICE: ci_acme_service 
+  SERVICE: ci_acme_service
   #oidc_ciara 
 
 jobs:
