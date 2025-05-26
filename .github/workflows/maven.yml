@@ -86,9 +86,9 @@ jobs:
       # 5a) Install mvnd
       - name: Install mvnd
         run: |
-          curl -L https://downloads.apache.org/maven/mvnd/0.9.1/mvnd-0.9.1-linux-amd64.zip -o mvnd.zip
-          unzip mvnd.zip -d mvnd-dist
-          sudo mv mvnd-dist/mvnd-0.9.1-linux-amd64/bin/mvnd /usr/local/bin/mvnd
+          curl -L https://archive.apache.org/dist/maven/mvnd/0.9.1/maven-mvnd-0.9.1-linux-amd64.zip -o mvnd.zip
+          unzip mvnd.zip
+          sudo mv maven-mvnd-0.9.1-linux-amd64/bin/mvnd /usr/local/bin/mvnd
           chmod +x /usr/local/bin/mvnd
           mvnd --version
 
