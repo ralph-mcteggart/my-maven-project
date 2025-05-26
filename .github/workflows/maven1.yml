@@ -67,7 +67,7 @@ jobs:
               <server>
                 <id>cloudsmith</id>
                 <username>${{env.SERVICE}}</username>
-                <password>${CLOUDSMITH_API_KEY}</password>
+                <password>${secrets.CLOUDSMITH_API_KEY}</password>
               </server>
             </servers>
             <mirrors>
