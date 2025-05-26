@@ -14,7 +14,7 @@ env:
   CLOUDSMITH_ORG: globex-innovations
   #cloudsmith-test 
   #globex-innovations
-  CLOUDSMITH_REPO: acme-prod3
+  CLOUDSMITH_REPO: acme-prod5
   SERVICE: ci_acme_service
   #oidc_ciara 
 
@@ -94,7 +94,7 @@ jobs:
 
       # 5b) Build with mvnd (multi-threaded Maven daemon)
       - name: Build with mvnd
-        run: mvnd clean verify --settings ~/.m2/settings.xml -T 1C -U
+        run: mvnd clean verify --settings ~/.m2/settings.xml -T 16 -U
 
         
       # 6) Deploy to Cloudsmith
