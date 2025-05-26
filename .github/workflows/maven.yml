@@ -8,12 +8,15 @@ on:
     
 permissions:
   contents: read
-  id-token: write  # for OIDC → Cloudsmith
+  id-token: write  # Necessary for GH Identity Provider to write the JWT token which Cloudsmith needs to read
 
 env:
   CLOUDSMITH_ORG: globex-innovations
+  #cloudsmith-test 
+  #globex-innovations
   CLOUDSMITH_REPO: acme-prod
-  SERVICE: ci_acme_service
+  SERVICE: ci_acme_service 
+  #oidc_ciara 
 
 jobs:
   build-and-deploy:
@@ -31,11 +34,9 @@ jobs:
           java-version: "11"
           distribution: "adopt"
 
-      # 3) Install Maven Daemon (mvnd)
-      - name: Install mvnd
-        run: |
-          brew tap mvndaemon/homebrew-mvnd
-          brew install mvnd@1
+      # 3) Clear local Maven cache (optional)
+      - name: Clear Maven cache
+        run: rm -rf ~/.m2/repository/*
 
       # 4a) Get ephemeral token
       - name: Auth to Cloudsmith with OIDC
@@ -59,41 +60,31 @@ jobs:
               <server>
                 <id>cloudsmith</id>
                 <username>${{env.SERVICE}}</username>
-                <password>${{ secrets.CLOUDSMITH_API_KEY }}</password>
+                <password>${CLOUDSMITH_API_KEY}</password>
               </server>
             </servers>
             <mirrors>
               <mirror>
                 <id>cloudsmith</id>
                 <name>Cloudsmith – mirror of Central</name>
-                <url>https://maven.cloudsmith.io/${{env.CLOUDSMITH_ORG}}/${{env.CLOUDSMITH_REPO}}/</url>
-                <mirrorOf>*,!central</mirrorOf>
+                <url>https://maven.cloudsmith.io/${CLOUDSMITH_ORG}/${CLOUDSMITH_REPO}/</url>
+                <mirrorOf>central</mirrorOf>
               </mirror>
             </mirrors>
           </settings>
           EOF
-
-      # Debug: Show settings
+          
+      # Debug: Show Maven settings to verify correctness (remove before production)
       - name: Debug Generated Maven Settings
         run: cat ~/.m2/settings.xml
 
-      # 5) (Optional) Cache Maven repository
-      - name: Cache ~/.m2/repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
+      # 5) Build with Maven
+      - name: Build with Maven
+        #run: mvn clean package --settings ~/.m2/settings.xml -U
+        run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
 
-      # 6) (Optional) Pre-fetch all dependencies
-      - name: mvnd go-offline
-        run: mvnd dependency:go-offline --settings ~/.m2/settings.xml
-
-      # 7) Build with Maven Daemon
-      - name: Build with mvnd
-        run: mvnd -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
-
-      # 8) Deploy to Cloudsmith
+        
+      # 6) Deploy to Cloudsmith
       - name: Deploy to Cloudsmith
-        run: mvnd deploy --settings ~/.m2/settings.xml
+        run: mvn deploy --settings ~/.m2/settings.xml
+        
