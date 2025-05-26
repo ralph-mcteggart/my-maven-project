@@ -86,10 +86,9 @@ jobs:
       # 5a) Install mvnd
       - name: Install mvnd
         run: |
-          curl -L https://archive.apache.org/dist/maven/mvnd/0.9.1/maven-mvnd-0.9.1-linux-amd64.zip -o mvnd.zip
-          unzip mvnd.zip
-          sudo mv maven-mvnd-0.9.1-linux-amd64/bin/mvnd /usr/local/bin/mvnd
-          chmod +x /usr/local/bin/mvnd
+          curl -L https://archive.apache.org/dist/maven/mvnd/0.9.1/maven-mvnd-0.9.1-linux-amd64.tar.gz -o mvnd.tar.gz
+          mkdir mvnd && tar -xzf mvnd.tar.gz -C mvnd --strip-components=1
+          echo "$PWD/mvnd/bin" >> $GITHUB_PATH
           mvnd --version
 
       # 5b) Build with mvnd (multi-threaded Maven daemon)
