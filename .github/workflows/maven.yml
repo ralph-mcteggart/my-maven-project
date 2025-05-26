@@ -86,10 +86,9 @@ jobs:
       # 5a) Install mvnd
       - name: Install mvnd
         run: |
-          curl -L https://archive.apache.org/dist/maven/mvnd/0.9.1/mvnd-0.9.1-linux-amd64.tar.gz -o mvnd.tar.gz
-          mkdir mvnd
-          tar -xzf mvnd.tar.gz -C mvnd --strip-components=1
-          echo "$PWD/mvnd/bin" >> $GITHUB_PATH
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install mvnd
           mvnd --version
 
       # 5b) Build with mvnd (multi-threaded Maven daemon)
