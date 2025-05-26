@@ -14,7 +14,7 @@ env:
   CLOUDSMITH_ORG: globex-innovations
   #cloudsmith-test 
   #globex-innovations
-  CLOUDSMITH_REPO: acme-prod5
+  CLOUDSMITH_REPO: acme-prod
   SERVICE: ci_acme_service
   #oidc_ciara 
 
@@ -79,22 +79,10 @@ jobs:
         run: cat ~/.m2/settings.xml
 
       # 5) Build with Maven
-      #- name: Build with Maven
+      - name: Build with Maven
         #run: mvn clean package --settings ~/.m2/settings.xml -U
         #run: mvn -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
-
-      # 5a) Install mvnd
-      - name: Install mvnd
-        run: |
-          curl -s "https://get.sdkman.io" | bash
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-          sdk install mvnd
-          echo "$HOME/.sdkman/candidates/mvnd/current/bin" >> $GITHUB_PATH
-          mvnd --version
-
-      # 5b) Build with mvnd (multi-threaded Maven daemon)
-      - name: Build with mvnd
-        run: mvnd clean verify --settings ~/.m2/settings.xml -T 16 -U
+        run:  mvn -B -s ~/.m2/settings.xml -Daether.dependencyCollector.impl=bf -Dmaven.artifact.threads=4 dependency:resolve
 
         
       # 6) Deploy to Cloudsmith
