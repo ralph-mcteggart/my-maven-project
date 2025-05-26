@@ -1,52 +1,44 @@
-name: Java CI with mvnd
+name: Java CI and Deploy to Cloudsmith
 
-on:
+on: 
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+    
 permissions:
   contents: read
-  id-token: write
+  id-token: write  # for OIDC → Cloudsmith
 
 env:
   CLOUDSMITH_ORG: globex-innovations
-  CLOUDSMITH_REPO: acme-nonprod
+  CLOUDSMITH_REPO: acme-prod
   SERVICE: ci_acme_service
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # by default GitHub kills a job after 360 minutes (6 hours) if you don't override it :contentReference[oaicite:0]{index=0}
-    # timeout-minutes: 360
 
     steps:
-      # 1) Checkout your code
-      - name: Checkout repository
-        uses: actions/checkout@v3   # v4 exists, but v3 is universally available :contentReference[oaicite:1]{index=1}
+      # 1) Check out the code
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-      # 2) Set up Java 11
+      # 2) Set up Java (JDK 11)
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v2
         with:
-          distribution: temurin
-          java-version: '11'
+          java-version: "11"
+          distribution: "adopt"
 
-      # 3) Install mvnd (Apache Maven Daemon) v1.0.2 for Maven 3.9.x
+      # 3) Install Maven Daemon (mvnd)
       - name: Install mvnd
         run: |
-          MVND_VER=1.0.2
-          curl -sL \
-            https://github.com/apache/maven-mvnd/releases/download/${MVND_VER}/mvnd-${MVND_VER}-linux-amd64.tar.gz \
-            | tar xz
-          mkdir -p $HOME/bin
-          mv mvnd-${MVND_VER}-linux-amd64/bin/mvnd mvnd-${MVND_VER}-linux-amd64/bin/mvnd-daemon $HOME/bin/
-          echo "$HOME/bin" >> $GITHUB_PATH
-        # Apache Maven Daemon 1.0.2 wraps Maven 3.9.9 under the hood :contentReference[oaicite:2]{index=2}
+          brew tap mvndaemon/homebrew-mvnd
+          brew install mvnd@1
 
-      # 4) Authenticate to Cloudsmith via OIDC
-      - name: Auth to Cloudsmith
+      # 4a) Get ephemeral token
+      - name: Auth to Cloudsmith with OIDC
         uses: cloudsmith-io/cloudsmith-cli-action@v1.0.2
         with:
           oidc-namespace: ${{ env.CLOUDSMITH_ORG }}
@@ -54,11 +46,11 @@ jobs:
           oidc-auth-only: 'true'
           pip-install: false
 
-      # 5) Configure your settings.xml (mirror everything *except* Central)
+      # 4b) Configure Maven settings (Pull & Push to Cloudsmith)
       - name: Configure Maven settings
         run: |
           mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<'EOF'
+          cat <<EOF > ~/.m2/settings.xml
           <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -66,23 +58,27 @@ jobs:
             <servers>
               <server>
                 <id>cloudsmith</id>
-                <username>${{ env.SERVICE }}</username>
+                <username>${{env.SERVICE}}</username>
                 <password>${{ secrets.CLOUDSMITH_API_KEY }}</password>
               </server>
             </servers>
             <mirrors>
               <mirror>
                 <id>cloudsmith</id>
-                <name>Cloudsmith – proxy of Central</name>
-                <url>https://maven.cloudsmith.io/${{ env.CLOUDSMITH_ORG }}/${{ env.CLOUDSMITH_REPO }}/</url>
+                <name>Cloudsmith – mirror of Central</name>
+                <url>https://maven.cloudsmith.io/${{env.CLOUDSMITH_ORG}}/${{env.CLOUDSMITH_REPO}}/</url>
                 <mirrorOf>*,!central</mirrorOf>
               </mirror>
             </mirrors>
           </settings>
           EOF
 
-      # 6) Cache your local repo between runs
-      - name: Cache Maven dependencies
+      # Debug: Show settings
+      - name: Debug Generated Maven Settings
+        run: cat ~/.m2/settings.xml
+
+      # 5) (Optional) Cache Maven repository
+      - name: Cache ~/.m2/repository
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -90,14 +86,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      # 7) Pre-fetch everything so the real build is fast
+      # 6) (Optional) Pre-fetch all dependencies
       - name: mvnd go-offline
         run: mvnd dependency:go-offline --settings ~/.m2/settings.xml
 
-      # 8) Build and run tests with mvnd
+      # 7) Build with Maven Daemon
       - name: Build with mvnd
-        run: mvnd -T1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
+        run: mvnd -T 1C -Dmaven.artifact.threads=12 clean verify --settings ~/.m2/settings.xml -U
 
-      # 9) Deploy to Cloudsmith
-      - name: Deploy
+      # 8) Deploy to Cloudsmith
+      - name: Deploy to Cloudsmith
         run: mvnd deploy --settings ~/.m2/settings.xml
